@@ -1,0 +1,415 @@
+﻿<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>إلى رفيف، هدية خاصة جداً</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Reem+Kufi+Fun&family=Scheherazade+New:wght@700&display=swap" rel="stylesheet">
+    <style>
+        /* ===== عام وإعدادات الخلفية ===== */
+        :root {
+            --primary-color: #A52A2A; /* بني محمر */
+            --light-color: #FAEBD7; /* عاجي فاتح */
+            --dark-background: #100000; /* خلفية أغمق للبداية */
+            --conclusion-color: #4B0000; /* أحمر داكن جداً للخاتمة */
+        }
+        html, body { height: 100%; margin: 0; }
+        body {
+            background: var(--dark-background);
+            font-family: 'Amiri', serif;
+            direction: rtl;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background 2s ease-in-out;
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUEUgAAAAYAAAAGCAYAAADgzq1NAAAALklEQVQIW2NkYGDYBQJigZ0YI4yYGBgxU4xIhmEApg0MgzCghgYQ4GqgAwB98Q4rL+f6GAAAAABJRU5EUkJggg==');
+            background-repeat: repeat;
+        }
+        
+        /* تأثير وميض الخلفية الجديد */
+        .flickering-background {
+            animation: flicker 1s infinite alternate; 
+        }
+
+        @keyframes flicker {
+            0% { background-color: black; }
+            100% { background-color: var(--conclusion-color); } /* يتحول للأحمر الداكن */
+        }
+
+        /* ===== شاشة الكشف الأولي (الظلام) ===== */
+        #initial-screen {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--dark-background);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            z-index: 100;
+            cursor: pointer;
+            transition: opacity 1.5s ease-in-out;
+        }
+        #initial-screen p {
+            font-size: 24px;
+            opacity: 0.7;
+            margin-bottom: 20px;
+            transition: opacity 0.5s;
+        }
+        #initial-screen:hover p { opacity: 1; }
+
+        /* ===== النص المُشفر / اسم رفيف ===== */
+        #decrypted-text {
+            font-family: 'Scheherazade New', serif;
+            font-size: 80px;
+            letter-spacing: 5px;
+            color: var(--primary-color);
+            text-shadow: 0 0 15px var(--primary-color);
+            opacity: 0;
+            transition: opacity 2s ease-in-out, transform 0.5s;
+        }
+        #decrypted-text.visible { opacity: 1; }
+
+        /* ===== القلب النابض والقلوب المتساقطة ===== */
+        #pulsing-heart {
+            font-size: 120px;
+            color: var(--primary-color);
+            opacity: 0;
+            margin-top: 30px;
+            animation: pulse 1s infinite alternate;
+            transition: opacity 1s ease-in-out;
+        }
+        #pulsing-heart.active { opacity: 1; }
+        @keyframes pulse {
+            0% { transform: scale(1); filter: drop-shadow(0 0 5px var(--primary-color)); }
+            100% { transform: scale(1.08); filter: drop-shadow(0 0 20px var(--primary-color)); }
+        }
+        .falling-heart {
+            position: fixed;
+            top: -20px;
+            font-size: 20px;
+            color: var(--primary-color);
+            animation: fall 5s linear forwards;
+            opacity: 0.8;
+            pointer-events: none;
+            z-index: 99;
+        }
+
+        /* ===== صفحة الرسالة (اللوحة) ===== */
+        #love-message-page {
+            position: absolute;
+            width: 90%;
+            max-width: 700px;
+            min-height: 400px;
+            background: var(--light-color);
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            padding: 50px;
+            box-sizing: border-box;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: opacity 1.5s ease-in-out, transform 1.5s ease-in-out;
+            z-index: 50;
+            overflow-y: auto;
+            background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUEUgAAAJgAAACYAQMAAAAGtN02AAAABlBMVEXd3d0AAAB02hV/AAAAAXRSTlMAQObYZgAAAFpJREFUKM9jYACJESrGqGjEGBgxU4xJhgEApg0MgzCghgYQYEqgAwF9/r8o/v8/Gf5///8Y/v/Nl/7/Vz79/53BqYgxw5CxoYQYG5mHwYDBYQAAXz4WvGg23gIAAAAASUVORK5CYII=");
+            background-size: cover;
+            border: 5px double var(--primary-color);
+        }
+        #love-message-page.visible { opacity: 1; transform: scale(1); }
+        
+        #message-content {
+            font-family: 'Reem Kufi Fun', sans-serif;
+            color: #333;
+            line-height: 2;
+            text-align: justify;
+            text-align-last: right;
+            border-right: 3px solid var(--primary-color);
+            padding-right: 20px;
+            font-size: 24px;
+            white-space: pre-wrap;
+            overflow: hidden;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+        #message-content.writing { opacity: 1; }
+        
+        /* ===== المرحلة النهائية: السينما السرية (الخاتمة) ===== */
+        #cinema-screen {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: transparent;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 120;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            color: white;
+            text-align: center;
+        }
+        #cinema-screen.visible { opacity: 1; }
+
+        /* عبارة الختام الصغيرة - تطبيق الخط الكوفي */
+        #final-phrase-text {
+            font-size: 45px; /* زيادة الحجم قليلاً */
+            font-family: 'Scheherazade New', serif; /* خط كوفي أنيق */
+            color: white;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
+            margin-bottom: 50px;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            font-weight: 700; /* جعل الخط سميكًا */
+        }
+
+        #video-container {
+            width: 90vw;
+            max-width: 800px;
+            background: #111;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        #rafif-video {
+            width: 100%;
+            height: auto;
+            display: block;
+            opacity: 0; 
+            transition: opacity 0.5s;
+        }
+        #rafif-video.active {
+            opacity: 1;
+        }
+
+        /* ===== توقيع المطور ===== */
+        .developer-signature {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 18px;
+            z-index: 101;
+            direction: ltr;
+        }
+        
+        /* ===== استجابة الشاشة الصغيرة ===== */
+        @media (max-width: 600px) {
+            #decrypted-text { font-size: 50px; }
+            #pulsing-heart { font-size: 80px; }
+            #love-message-page { padding: 30px; }
+            #message-content { font-size: 18px; line-height: 1.8; }
+            #final-phrase-text { font-size: 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="initial-screen">
+        <p>اضغطي لفتح اللوحة...</p>
+        <div id="decrypted-text"></div>
+        <div id="pulsing-heart" class="active">💖</div>
+    </div>
+
+    <div id="love-message-page">
+        <div id="message-content"></div>
+    </div>
+    
+    <div id="cinema-screen">
+        <div id="final-phrase-text"></div>
+        <div id="video-container">
+             <video id="rafif-video" muted playsinline preload="auto">
+                <source src="https://k.top4top.io/m_3555er5d41.mp4" type="video/mp4">
+                عذراً، متصفحك لا يدعم تشغيل الفيديو.
+            </video>
+        </div>
+        <p style="margin-top: 20px; font-size: 20px;">**إلى الأبد، عبدو**</p>
+    </div>
+
+    <div class="developer-signature">Coded by Abdou</div>
+
+    <audio id="mysteryAudio" src="https://assets.mixkit.co/sfx/preview/mixkit-mystery-reveal-646.mp3" preload="auto"></audio>
+    <audio id="loveAudio" src="https://f.top4top.io/m_3553m5i0t1.mp3" preload="auto" loop></audio>
+    <audio id="revealAudio" src="https://assets.mixkit.co/sfx/preview/mixkit-pen-on-paper-writing-2798.mp3" preload="auto"></audio>
+    <audio id="transitionAudio" src="https://assets.mixkit.co/sfx/preview/mixkit-magic-chime-tone-2334.mp3" preload="auto"></audio>
+
+    <script>
+        // الرسالة المحفوظة
+        const longLoveMessage = `
+            إلى حبيبتي رفيف،
+            
+            أنتِ برهان أن القلوب إذا التقت بصدق تصنع أجمل الحكايات. حبك ليس صدفة، بل قدر جمع روحين ليكونا سنداً لبعضهما. أسأل الله أن يديم بيننا المودة والسكينة، وأن تظل أيامنا عامرة بالضحك والطمأنينة. و ربي يحفظك لي، ويزيد حبنا يوم بعد يوم. وجودك في حياتي يعطي معنى جميل لها، وإن شاء الله تبقي ديما السند والفرحة لي.
+
+            
+            بكل حبي،
+            عبدو
+        `;
+        // العبارة الختامية المطلوبة
+        const finalSecretPhrase = "أنتِ روحي و قدري الأجمل ❤️";
+
+        const initialScreen = document.getElementById("initial-screen");
+        const decryptedText = document.getElementById("decrypted-text");
+        const pulsingHeart = document.getElementById("pulsing-heart");
+        const loveMessagePage = document.getElementById("love-message-page");
+        const messageContent = document.getElementById("message-content");
+        const cinemaScreen = document.getElementById("cinema-screen");
+        const rafifVideo = document.getElementById("rafif-video");
+        
+        // الأصوات
+        const mysteryAudio = document.getElementById("mysteryAudio");
+        const loveAudio = document.getElementById("loveAudio");
+        const revealAudio = document.getElementById("revealAudio");
+        const transitionAudio = document.getElementById("transitionAudio");
+        
+        let heartInterval;
+        
+        // 1. تأثير فك التشفير الأولي
+        function startDecryptionEffect(finalText, duration) {
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzأبتثجحخدذرزسشصضطظعغفقكلمنهوي";
+            let iteration = 0;
+            const interval = 50; 
+            
+            mysteryAudio.loop = false;
+            mysteryAudio.play().catch(e => console.log("Mystery audio blocked."));
+
+            const decryptInterval = setInterval(() => {
+                decryptedText.textContent = finalText
+                    .split("")
+                    .map((char, index) => {
+                        if (index < iteration) {
+                            return finalText[index];
+                        }
+                        return chars[Math.floor(Math.random() * chars.length)];
+                    })
+                    .join("");
+                
+                if (iteration >= finalText.length) {
+                    clearInterval(decryptInterval);
+                    decryptedText.classList.add("visible");
+                    mysteryAudio.pause();
+                    setTimeout(startHeartRain, 500);
+                }
+                
+                iteration += 1 / (duration / finalText.length / interval);
+            }, interval);
+        }
+        
+        // 2. تساقط القلوب
+        function createFallingHeart() {
+            const h = document.createElement("div");
+            h.className = "falling-heart";
+            h.innerHTML = "💖";
+            h.style.left = Math.random() * 100 + "%";
+            h.style.animationDuration = (3 + Math.random() * 3) + "s";
+            h.style.fontSize = (16 + Math.random() * 24) + "px";
+            document.body.appendChild(h);
+            setTimeout(() => h.remove(), 6000);
+        }
+
+        function startHeartRain() {
+            loveAudio.play().catch(e => console.log("Love audio blocked."));
+            pulsingHeart.style.animation = 'none';
+            pulsingHeart.style.transform = 'scale(1.5)';
+            setTimeout(() => {
+                heartInterval = setInterval(createFallingHeart, 100);
+                setTimeout(() => clearInterval(heartInterval), 2000);
+            }, 1000); 
+        }
+
+        // 3. تأثير الكتابة اليدوية
+        function startWritingEffect(text) {
+            messageContent.classList.add('writing');
+            let i = 0;
+            const speed = 70;
+
+            function typeWriter() {
+                if (i < text.length) {
+                    messageContent.innerHTML += text.charAt(i) === '\n' ? '<br>' : text.charAt(i);
+                    if (text.charAt(i).trim() !== '') {
+                        revealAudio.currentTime = 0;
+                        revealAudio.play().catch(() => {});
+                    }
+                    i++;
+                    setTimeout(typeWriter, speed);
+                } else {
+                    // الانتقال إلى المرحلة النهائية المطلوبة (فور الانتهاء)
+                    setTimeout(startCinemaReveal, 4000); // 4 ثواني للتأمل بعد الرسالة
+                }
+            }
+            typeWriter();
+        }
+        
+        // 4. المرحلة النهائية الجديدة والمدمجة
+        function startCinemaReveal() {
+            // 1. إخفاء اللوحة
+            loveMessagePage.style.opacity = '0';
+            
+            // صوت انتقال
+            transitionAudio.play().catch(() => {});
+
+            setTimeout(() => {
+                loveMessagePage.style.display = 'none';
+                
+                // 2. تفعيل تأثير وميض الخلفية (الأسود/الأحمر)
+                document.body.classList.add('flickering-background');
+
+                // 3. إظهار شاشة السينما
+                cinemaScreen.style.display = 'flex';
+                setTimeout(() => {
+                    cinemaScreen.classList.add('visible');
+
+                    // 4. ظهور العبارة الختامية
+                    document.getElementById('final-phrase-text').textContent = finalSecretPhrase;
+                    document.getElementById('final-phrase-text').style.opacity = '1';
+                    
+                    // 5. محاولة تشغيل الفيديو تلقائياً (صامتاً)
+                    rafifVideo.play().then(() => {
+                        rafifVideo.classList.add('active');
+                    }).catch(error => {
+                        // إذا فشل التشغيل التلقائي، نترك الفيديو مع زر التشغيل
+                        console.log("Autoplay blocked. User must click play.", error);
+                        rafifVideo.controls = true; 
+                        rafifVideo.classList.add('active');
+                    });
+                    
+                }, 100);
+
+            }, 1500);
+        }
+
+        // نقطة البدء
+        function startLoveReveal() {
+            startDecryptionEffect("Rafif", 1500);
+            
+            initialScreen.addEventListener("click", () => {
+                
+                initialScreen.style.opacity = "0";
+                clearInterval(heartInterval);
+                
+                transitionAudio.play().catch(() => {}); 
+
+                document.body.style.background = `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')} 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--light-color')} 100%)`;
+
+                setTimeout(() => {
+                    initialScreen.style.display = "none";
+                    loveMessagePage.style.display = "block";
+                    setTimeout(() => {
+                        loveMessagePage.classList.add("visible");
+                    }, 50); 
+                    
+                    setTimeout(() => {
+                        startWritingEffect(longLoveMessage);
+                    }, 1000);
+                }, 1500);
+                
+            }, { once: true });
+        }
+        
+        startLoveReveal();
+
+    </script>
+</body>
+</html>
